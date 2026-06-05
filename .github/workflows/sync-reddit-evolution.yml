@@ -16,6 +16,7 @@ jobs:
 
       - name: Sync reddit_evolution.snippet
         run: |
+          : > reddit_evolution.snippet
           curl -fsSL "https://gist.githubusercontent.com/RavelloH/68ed0626dae69a1ce7c8ad6887087ea1/raw/main.snippet" \
             | grep -v '^#' >> reddit_evolution.snippet
 
