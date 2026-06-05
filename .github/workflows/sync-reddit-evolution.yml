@@ -16,15 +16,26 @@ jobs:
 
       - name: Sync reddit_evolution.snippet
         run: |
-          NOW=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
-
-          echo "# Updated at $NOW (UTC+8)" > reddit_evolution.snippet
-
           curl -fsSL "https://gist.githubusercontent.com/RavelloH/68ed0626dae69a1ce7c8ad6887087ea1/raw/main.snippet" \
             | grep -v '^#' >> reddit_evolution.snippet
 
           curl -fsSL "https://raw.githubusercontent.com/ddgksf2013/Rewrite/refs/heads/master/AdBlock/RedditAds.conf" \
             | grep -v '^/' >> reddit_evolution.snippet
+
+          # Deduplicate hostname entries
+          HOSTNAMES=$(grep '^hostname = ' reddit_evolution.snippet \
+            | sed 's/^hostname = //' \
+            | tr ',' '\n' \
+            | sed 's/^ *//; s/ *$//' \
+            | sort -u \
+            | tr '\n' ',' \
+            | sed 's/,$//' \
+            | sed 's/,/, /g')
+          grep -v '^hostname = ' reddit_evolution.snippet \
+            | grep -v '^$' > tmp.snippet
+          printf "hostname = %s\n\n" "$HOSTNAMES" > reddit_evolution.snippet
+          cat tmp.snippet >> reddit_evolution.snippet
+          rm tmp.snippet
 
       - name: Commit and Push
         run: |
