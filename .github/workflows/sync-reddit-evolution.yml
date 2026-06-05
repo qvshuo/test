@@ -24,7 +24,7 @@ jobs:
             | grep -v '^#' >> reddit_evolution.snippet
 
           curl -fsSL "https://raw.githubusercontent.com/ddgksf2013/Rewrite/refs/heads/master/AdBlock/RedditAds.conf" \
-            | grep -v '^//' >> reddit_evolution.snippet
+            | grep -v '^/' >> reddit_evolution.snippet
 
       - name: Commit and Push
         run: |
