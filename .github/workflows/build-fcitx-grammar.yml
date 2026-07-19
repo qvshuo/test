@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget zstd python3
+          sudo apt-get install -y wget zstd python3 librime1
 
       - name: Checkout rime-build-grammar tools
         uses: actions/checkout@v4
@@ -59,10 +59,15 @@ jobs:
           python3 ../rime-build-grammar/merge_ngram.py --input-dir output --orders 2 3
           ls -lh output/merge_2_3.txt
 
-      - name: Build .gram
+      - name: Check dynamic dependencies
         run: |
           cd work
           chmod +x ../rime-build-grammar/build_grammar.linux
+          ldd ../rime-build-grammar/build_grammar.linux || true
+
+      - name: Build .gram
+        run: |
+          cd work
           cat output/merge_2_3.txt | ../rime-build-grammar/build_grammar.linux lm_sc
           ls -lh lm_sc.gram
 
