@@ -1,4 +1,4 @@
-name: Build fcitx grammar model
+name: Convert Fcitx ARPA to Rime Octagram .gram
 
 on:
   workflow_dispatch:
