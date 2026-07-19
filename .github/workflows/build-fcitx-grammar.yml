@@ -18,31 +18,28 @@ jobs:
 
     steps:
       - name: Checkout current repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget zstd python3 librime1
+          sudo apt-get install -y librime1 python3 wget zstd
 
       - name: Checkout rime-build-grammar tools
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: gaboolic/rime-build-grammar
           path: rime-build-grammar
 
       - name: Build lm_sc.gram
         run: |
-          mkdir -p work
-          cd work
-          wget "https://download.fcitx-im.org/data/lm_sc.arpa-${{ github.event.inputs.arpa_date }}.tar.zst" -O model.tar.zst
-          zstd -d model.tar.zst -o model.tar
-          tar -xf model.tar
-          python3 ../rime-build-grammar/arpa.py lm_sc.arpa --output-dir output
-          python3 ../rime-build-grammar/merge_ngram.py --input-dir output --orders 2 3
-          chmod +x ../rime-build-grammar/build_grammar.linux
-          ../rime-build-grammar/build_grammar.linux lm_sc < output/merge_2_3.txt
-          mv lm_sc.gram ../lm_sc.gram
+          wget "https://download.fcitx-im.org/data/lm_sc.arpa-${{ github.event.inputs.arpa_date }}.tar.zst" -O lm_sc.arpa.tar.zst
+          zstd -d lm_sc.arpa.tar.zst -o lm_sc.arpa.tar
+          tar -xf lm_sc.arpa.tar
+          python3 rime-build-grammar/arpa.py lm_sc.arpa --output-dir output
+          python3 rime-build-grammar/merge_ngram.py --input-dir output --orders 2 3
+          chmod +x rime-build-grammar/build_grammar.linux
+          rime-build-grammar/build_grammar.linux lm_sc < output/merge_2_3.txt
 
       - name: Commit generated file
         run: |
