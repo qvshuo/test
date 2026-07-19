@@ -1,15 +1,7 @@
 # Build fcitx grammar model for RIME
 #
-# WARNING: This workflow downloads lm_sc.arpa from fcitx-im.org, which is
-# ~77 GB (compressed) for the 20260629 snapshot. Standard GitHub Actions
-# runners only have ~14-20 GB of disk and will fail. To use this workflow
-# you need either:
-#   - a GitHub larger runner with at least 200 GB disk, or
-#   - a self-hosted runner with sufficient disk and network.
-#
-# The input model is the fcitx5/libime language model (lm_sc.arpa). It is
-# converted to RIME Octagram format (.gram) using the tools from
-# gaboolic/rime-build-grammar.
+# Downloads lm_sc.arpa from fcitx-im.org and converts it to RIME Octagram
+# format (.gram) using the tools from gaboolic/rime-build-grammar.
 
 name: Build fcitx grammar model
 
@@ -32,8 +24,6 @@ permissions:
 
 jobs:
   build:
-    # Standard runners do NOT have enough disk. Change this to a larger
-    # runner or a self-hosted runner before running.
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
@@ -67,13 +57,13 @@ jobs:
           cd work
           python3 ../rime-build-grammar/arpa.py lm_sc.arpa --output-dir output
           python3 ../rime-build-grammar/merge_ngram.py --input-dir output --orders 2 3
-          ls -lh merge_2_3.txt
+          ls -lh output/merge_2_3.txt
 
       - name: Build .gram
         run: |
           cd work
           chmod +x ../rime-build-grammar/build_grammar.linux
-          cat merge_2_3.txt | ../rime-build-grammar/build_grammar.linux lm_sc
+          cat output/merge_2_3.txt | ../rime-build-grammar/build_grammar.linux lm_sc
           ls -lh lm_sc.gram
 
       - name: Upload .gram to release
