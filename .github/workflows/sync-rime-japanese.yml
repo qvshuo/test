@@ -16,10 +16,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Clean possible leftover plum entry
+        run: |
+          rm -rf plum
+          git rm --cached plum 2>/dev/null || true
+          
       - name: Install rime-japanese into repository root
         run: |
-          export rime_dir=".."
-          curl -fsSL https://raw.githubusercontent.com/rime/plum/master/rime-install | bash -s -- gkovacs/rime-japanese
+          rime_dir="." curl -fsSL https://raw.githubusercontent.com/rime/plum/master/rime-install | bash -s -- gkovacs/rime-japanese
 
       - name: Commit and push changes
         run: |
