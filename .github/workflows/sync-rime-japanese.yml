@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install rime-japanese into repository root
+      - name: Sync gkovacs/rime-japanese files
         run: |
           export rime_dir="."
           curl -fsSL https://raw.githubusercontent.com/rime/plum/master/rime-install | bash -s -- gkovacs/rime-japanese
