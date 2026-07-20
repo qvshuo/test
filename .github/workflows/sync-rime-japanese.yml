@@ -20,6 +20,7 @@ jobs:
         run: |
           export rime_dir="."
           curl -fsSL https://raw.githubusercontent.com/rime/plum/master/rime-install | bash -s -- gkovacs/rime-japanese
+          rm -rf plum
 
       - name: Commit and push changes
         run: |
