@@ -16,18 +16,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install rime-japanese
+      - name: Install rime-japanese into repository root
         run: |
-          mkdir -p rime-japanese
-          git clone --depth 1 https://github.com/rime/plum.git
-          cd plum
-          rime_dir="../rime-japanese" bash rime-install gkovacs/rime-japanese
-
-      - name: Copy files to repository root
-        run: |
-          shopt -s dotglob nullglob
-          cp -rf rime-japanese/* .
-          rm -rf rime-japanese plum
+          export rime_dir=".."
+          curl -fsSL https://raw.githubusercontent.com/rime/plum/master/rime-install | bash -s -- gkovacs/rime-japanese
 
       - name: Commit and push changes
         run: |
