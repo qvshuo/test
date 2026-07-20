@@ -1,0 +1,45 @@
+name: Sync rime-japanese
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install rime-japanese
+        run: |
+          mkdir -p rime-japanese
+          git clone --depth 1 https://github.com/rime/plum.git
+          cd plum
+          rime_dir="../rime-japanese" bash rime-install gkovacs/rime-japanese
+
+      - name: Copy files to repository root
+        run: |
+          shopt -s dotglob nullglob
+          cp -rf rime-japanese/* .
+          rm -rf rime-japanese plum
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Sync rime-japanese"
+          git push
